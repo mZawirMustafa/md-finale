@@ -14,11 +14,11 @@ class DetailedPost extends StatefulWidget {
 }
 
 class _DetailedPostState extends State<DetailedPost> {
-  _DetailedPostState(String image, String name, String desc);
+  _DetailedPostState(this.image, this.name, this.desc);
 
-  String? image;
-  String? name;
-  String? desc;
+  String image;
+  String name;
+  String desc;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +61,9 @@ class _DetailedPostState extends State<DetailedPost> {
             Text(
               '$name',
               style: TextStyle(fontSize: 25),
+            ),
+            SizedBox(
+              height: 10,
             ),
             Text(
               '$desc',

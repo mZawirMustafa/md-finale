@@ -45,7 +45,7 @@ class _SignUpState extends State<SignUp> {
 
   void sendData() {
     channel.sink.add(
-        '{ "type": "sign_in", "data": { "name" : "$_controllerName.text"}}');
+        '{ "type": "sign_in", "data": { "name" : "${_controllerName.text}"}}');
     print('${_controllerName.text} sign in success');
     _controllerName.clear();
   }

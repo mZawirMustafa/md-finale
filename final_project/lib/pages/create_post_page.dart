@@ -39,12 +39,12 @@ class _CreatePostState extends State<CreatePost> {
   }
 
   void posting() {
-    // createchannel.sink.add(
-    //     '{ "type": "sign_in", "data": { "name" : "$_controllerName.text"}}');
-    // print('${_controllerName.text} sign in success');
-    _controllerTitle.clear();
-    _controllerDesc.clear();
-    _controllerImgUrl.clear();
+    createchannel.sink.add(
+        '{ "type": "create_post", "data": { "title" : "${_controllerTitle.text}", "description": "${_controllerDesc.text}", "image": "${_controllerImgUrl.text}"}}');
+
+    // _controllerTitle.clear();
+    // _controllerDesc.clear();
+    // _controllerImgUrl.clear();
   }
 
   @override
@@ -60,7 +60,12 @@ class _CreatePostState extends State<CreatePost> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Create a post'),
+          backgroundColor: Colors.black,
+          title: Text(
+            'Create a post',
+            style: TextStyle(color: Colors.blueAccent),
+          ),
+          centerTitle: true,
         ),
         body: Center(
           child: Column(
@@ -177,7 +182,11 @@ class _CreatePostState extends State<CreatePost> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        TextButton(onPressed: () {}, child: Text('Cancel')),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text('Cancel')),
                         SizedBox(
                           width: 70,
                         ),
@@ -187,7 +196,12 @@ class _CreatePostState extends State<CreatePost> {
                             onPrimary: Colors.blueAccent,
                             onSurface: Colors.black, // foreground
                           ),
-                          onPressed: !_buttonAllowStatus ? null : () {},
+                          onPressed: !_buttonAllowStatus
+                              ? null
+                              : () {
+                                  posting();
+                                  Navigator.pop(context);
+                                },
                           child: const Text('Create Post'),
                         ),
                       ],

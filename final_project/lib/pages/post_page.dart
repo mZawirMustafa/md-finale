@@ -56,6 +56,17 @@ class _PostPageState extends State<PostPage> {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.only(left: 8.0),
+                      child: Text("Favourites"),
+                    )
+                  ],
+                ),
+                onTap: () {},
+              ),
+              ListTile(
+                title: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(left: 8.0),
                       child: Text("About"),
                     )
                   ],
