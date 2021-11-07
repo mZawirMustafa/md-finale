@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:final_project/pages/post_page.dart';
 import 'package:flutter/material.dart';
+
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class SignUp extends StatefulWidget {
   SignUp({Key? key}) : super(key: key);
@@ -9,6 +14,8 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final _controllerName = TextEditingController();
+  final channel =
+      WebSocketChannel.connect(Uri.parse('ws://besquare-demo.herokuapp.com'));
 
   bool _buttonAllowStatus = false;
 
@@ -36,18 +43,21 @@ class _SignUpState extends State<SignUp> {
     super.dispose();
   }
 
+  void sendData() {
+    channel.sink.add(
+        '{ "type": "sign_in", "data": { "name" : "$_controllerName.text"}}');
+    print('${_controllerName.text} sign in success');
+    _controllerName.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.blueAccent),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
         title: Text(
-          "Post Details Page",
+          "Log In",
           style: TextStyle(color: Colors.blueAccent),
         ),
         centerTitle: true,
@@ -115,16 +125,14 @@ class _SignUpState extends State<SignUp> {
                 onPressed: !_buttonAllowStatus
                     ? null
                     : () {
-                        final snackBar = SnackBar(
-                          content: const Text('Signed in Successfully'),
-                          action: SnackBarAction(
-                            label: 'Dismiss',
-                            onPressed: () {},
-                          ),
-                        );
+                        sendData();
 
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        _controllerName.clear();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  PostPage(postchannel: channel)),
+                        );
                       },
                 child: const Text('Sign In'),
               ),

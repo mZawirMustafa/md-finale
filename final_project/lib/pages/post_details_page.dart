@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
 
 class DetailedPost extends StatefulWidget {
-  DetailedPost({Key? key}) : super(key: key);
+  DetailedPost(
+      {Key? key, required this.image, required this.name, required this.desc})
+      : super(key: key);
+  final String image;
+  final String name;
+  final String desc;
 
   @override
-  _DetailedPostState createState() => _DetailedPostState();
+  _DetailedPostState createState() =>
+      _DetailedPostState(this.image, this.name, this.desc);
 }
 
 class _DetailedPostState extends State<DetailedPost> {
+  _DetailedPostState(String image, String name, String desc);
+
+  String? image;
+  String? name;
+  String? desc;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: Colors.blueAccent),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text("Post Details Page"),
@@ -28,18 +41,29 @@ class _DetailedPostState extends State<DetailedPost> {
             Container(
               width: 300,
               height: 270,
-              child: Image.network(
-                  'https://live.staticflickr.com/4111/5087455746_5371efe625_z.jpg'),
+              child: Image(
+                width: 100,
+                height: 100,
+                image: NetworkImage('$image'),
+                fit: BoxFit.fill,
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace? stackTrace) {
+                  return Container(
+                      width: 100,
+                      height: 100,
+                      child: Image.asset('error404.png'));
+                },
+              ),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
-              'Title',
+              '$name',
               style: TextStyle(fontSize: 25),
             ),
             Text(
-              "'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.'",
+              '$desc',
               style: TextStyle(fontSize: 15),
             )
           ],
