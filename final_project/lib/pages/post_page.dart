@@ -160,9 +160,10 @@ class _PostPageState extends State<PostPage> {
                                           EdgeInsets.only(left: 8, right: 8),
                                       child: Text(entry[index]["description"],
                                           overflow: TextOverflow.ellipsis,
+                                          maxLines: 3,
                                           style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
+                                            fontSize: 16,
+                                          )),
                                     ),
                                     SizedBox(
                                       height: 15,
