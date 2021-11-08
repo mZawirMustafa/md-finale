@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 
 class DetailedPost extends StatefulWidget {
-  DetailedPost(
-      {Key? key, required this.image, required this.name, required this.desc})
-      : super(key: key);
+  DetailedPost({
+    Key? key,
+    required this.image,
+    required this.name,
+    required this.title,
+    required this.desc,
+  }) : super(key: key);
   final String image;
   final String name;
   final String desc;
+  final String title;
 
   @override
   _DetailedPostState createState() =>
-      _DetailedPostState(this.image, this.name, this.desc);
+      _DetailedPostState(this.image, this.name, this.title, this.desc);
 }
 
 class _DetailedPostState extends State<DetailedPost> {
-  _DetailedPostState(this.image, this.name, this.desc);
+  _DetailedPostState(this.image, this.name, this.title, this.desc);
 
   String image;
   String name;
   String desc;
+  String title;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +35,7 @@ class _DetailedPostState extends State<DetailedPost> {
           icon: Icon(Icons.arrow_back, color: Colors.blueAccent),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text("Post Details Page"),
+        title: Text('$title', style: TextStyle(color: Colors.blueAccent)),
         centerTitle: true,
       ),
       body: Center(
@@ -51,7 +57,7 @@ class _DetailedPostState extends State<DetailedPost> {
                   return Container(
                       width: 100,
                       height: 100,
-                      child: Image.asset('error404.png'));
+                      child: Image.asset('assets/error404.png'));
                 },
               ),
             ),

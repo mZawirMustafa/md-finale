@@ -1,4 +1,6 @@
 import 'package:final_project/pages/create_post_page.dart';
+import 'package:final_project/pages/favourites.dart';
+import 'package:final_project/pages/login.dart';
 import 'package:final_project/pages/post_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:final_project/pages/about_page.dart';
@@ -17,8 +19,18 @@ class _PostPageState extends State<PostPage> {
   _PostPageState(this.postchannel);
   WebSocketChannel postchannel;
 
+  final snackBar = SnackBar(
+    content: const Text(
+        'Apologies, I could not figure the implementation for this functionality'),
+    action: SnackBarAction(
+      label: 'Undo',
+      onPressed: () {},
+    ),
+  );
+
   dynamic decodedResponse;
   List entry = [];
+  List favs = [];
   @override
   void initState() {
     super.initState();
@@ -39,11 +51,12 @@ class _PostPageState extends State<PostPage> {
 
   @override
   Widget build(BuildContext context) {
+    var sorted = entry.reversed.toList();
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,
           title: Text(
-            'Post Page',
+            'Home Feed',
             style: TextStyle(color: Colors.blueAccent),
           ),
           centerTitle: true,
@@ -60,7 +73,13 @@ class _PostPageState extends State<PostPage> {
                     )
                   ],
                 ),
-                onTap: () {},
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => Favourites()),
+                  // );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                },
               ),
               ListTile(
                 title: Row(
@@ -87,14 +106,20 @@ class _PostPageState extends State<PostPage> {
                     )
                   ],
                 ),
-                onTap: () {},
+                onTap: () {
+                  postchannel.sink.close();
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignUp()),
+                  );
+                },
               )
             ],
           ),
         ),
         body: Stack(children: [
           ListView.builder(
-              itemCount: entry.length,
+              itemCount: sorted.length,
               itemBuilder: (context, index) {
                 return Card(
                   elevation: 5,
@@ -105,9 +130,10 @@ class _PostPageState extends State<PostPage> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => DetailedPost(
-                                image: entry[index]["image"],
-                                name: entry[index]["author"],
-                                desc: entry[index]["description"])),
+                                image: sorted[index]["image"],
+                                name: sorted[index]["author"],
+                                title: sorted[index]["title"],
+                                desc: sorted[index]["description"])),
                       );
                     },
                     child: Container(
@@ -120,15 +146,14 @@ class _PostPageState extends State<PostPage> {
                             child: Image(
                               width: 100,
                               height: 100,
-                              image: NetworkImage(
-                                  "${entry[index]["image"].toString()}"),
+                              image: NetworkImage("${sorted[index]["image"]}"),
                               fit: BoxFit.fill,
                               errorBuilder: (BuildContext context,
                                   Object exception, StackTrace? stackTrace) {
                                 return Container(
                                     width: 100,
                                     height: 100,
-                                    child: Image.asset('error404.png'));
+                                    child: Image.asset('assets/error404.png'));
                               },
                             ),
                           ),
@@ -140,17 +165,15 @@ class _PostPageState extends State<PostPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 8, right: 8),
-                                          child: Text(entry[index]["author"],
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                      ],
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.only(left: 8, right: 8),
+                                      child: Text(sorted[index]["title"],
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold)),
                                     ),
                                     SizedBox(
                                       height: 5,
@@ -158,7 +181,7 @@ class _PostPageState extends State<PostPage> {
                                     Padding(
                                       padding:
                                           EdgeInsets.only(left: 8, right: 8),
-                                      child: Text(entry[index]["description"],
+                                      child: Text(sorted[index]["description"],
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 3,
                                           style: TextStyle(
@@ -171,7 +194,7 @@ class _PostPageState extends State<PostPage> {
                                     Padding(
                                       padding:
                                           EdgeInsets.only(left: 8, right: 8),
-                                      child: Text(entry[index]["date"],
+                                      child: Text(sorted[index]["date"],
                                           style: TextStyle(
                                             fontSize: 12,
                                           )),
@@ -179,28 +202,34 @@ class _PostPageState extends State<PostPage> {
                                   ],
                                 ),
                               )),
-                          Padding(
-                            padding: EdgeInsets.only(left: 0, right: 0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.lightBlueAccent,
+                          Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 0, right: 0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.lightBlueAccent,
+                                  ),
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  },
+                                  child: const Icon(Icons.favorite),
+                                ),
                               ),
-                              onPressed: () {
-                                // Perform some action
-                              },
-                              child: const Icon(Icons.favorite),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 5, right: 0),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.black),
-                              onPressed: () {
-                                // Perform some action
-                              },
-                              child: const Icon(Icons.delete),
-                            ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 0, right: 0),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.black),
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
+                                  },
+                                  child: const Icon(Icons.delete),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
